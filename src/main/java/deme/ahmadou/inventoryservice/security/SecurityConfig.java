@@ -1,8 +1,10 @@
 package deme.ahmadou.inventoryservice.security;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -15,7 +17,11 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final JwtAuthConverter jwtAuthConverter;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -25,7 +31,8 @@ public class SecurityConfig {
                 .headers(h -> h.frameOptions(frameOptionsConfig -> frameOptionsConfig.disable())) // disable frame options config for h2
                 .authorizeHttpRequests(ar -> ar.requestMatchers("/swagger-ui.html","/swagger-ui/**","/v3/**","/h2-console/**").permitAll())
                 .authorizeHttpRequests(ar -> ar.anyRequest().authenticated())
-                .oauth2ResourceServer(oa2rs -> oa2rs.jwt(Customizer.withDefaults()))
+                //.oauth2ResourceServer(oa2rs -> oa2rs.jwt(Customizer.withDefaults()))
+                .oauth2ResourceServer(oa2rs -> oa2rs.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthConverter)))
                 .build();
     }
 
