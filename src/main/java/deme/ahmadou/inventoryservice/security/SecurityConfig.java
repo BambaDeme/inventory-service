@@ -30,6 +30,7 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .headers(h -> h.frameOptions(frameOptionsConfig -> frameOptionsConfig.disable())) // disable frame options config for h2
                 .authorizeHttpRequests(ar -> ar.requestMatchers("/swagger-ui.html","/swagger-ui/**","/v3/**","/h2-console/**").permitAll())
+                //.authorizeHttpRequests(ar -> ar.requestMatchers("/api/v1/products/**").hasAuthority("ADMIN"))
                 .authorizeHttpRequests(ar -> ar.anyRequest().authenticated())
                 //.oauth2ResourceServer(oa2rs -> oa2rs.jwt(Customizer.withDefaults()))
                 .oauth2ResourceServer(oa2rs -> oa2rs.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthConverter)))
